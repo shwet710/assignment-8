@@ -1,0 +1,65 @@
+pragma solidity ^0.8.0;
+
+import "./ownership.sol";
+
+contract Storage is Authentification{
+    
+        string  name;
+        uint  age;
+        string place;
+        
+
+    function set(string memory _name,uint _age,string memory _place) public {
+        name = _name;
+        age = _age;
+        place = _place;
+    }
+}
+  
+contract UserDB is Storage {
+    
+    constructor() {
+        set("kaiyo",22,"LA");
+    }
+    event newUser(string name,uint age,string place);
+    event newAdmin(string name,uint age,string place);
+    
+    function addUser(string memory _name,uint _age,string memory _place) private onlyOwner {
+  
+     set(_name,_age,_place);
+       emit newUser(_name,_age,_place);
+    }
+
+    
+    function addAdmin(string memory _name,uint _age,string memory _place) private onlyOwner{
+       
+     set(_name,_age,_place);
+        emit newAdmin(_name,_age,_place);
+    
+    }
+    }
+
+contract Controller is Storage, UserDB {
+
+    mapping(address=>UserDB) public addUser;
+    
+    Storage public _storage;
+    
+    
+    function update(string memory _name,uint _age,string memory _place) public {
+        _storage.set(_name,_age,_place);
+    }
+    
+    function myaddr() public returns (address){
+        return msg.sender;
+    }
+    function get_name()  public returns(string memory){
+        return name;
+    }
+    function get_age()  public returns (uint age) {
+        return age;
+    }
+    function get_place()  public returns(string memory){
+        return place;
+    }
+}
